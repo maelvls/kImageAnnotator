@@ -110,7 +110,13 @@ QImage AnnotationArea::image()
 	mItemModifier->clear();
 	
 	setSceneRect(canvasRect());
-	auto scaleFactor = mDevicePixelRatioScaler->scaleFactor();
+
+	// On my 4K screen scaled down to 150%, the number returned by
+	// mDevicePixelRatioScaler->scaleFactor() is 2.0 instead of 1.0. So I
+	// hardcode this value to 1.0 to make sure the image doesn't grow every
+	// time I annotate it. See:
+	// https://github.com/ksnip/kImageAnnotator/issues/257
+	auto scaleFactor = 1.0;
 	auto sceneRect = this->sceneRect();
 	auto scaledSceneSize = sceneRect.size().toSize() * scaleFactor;
 	auto scaledSceneRect = QRectF(sceneRect.topLeft(), scaledSceneSize);
